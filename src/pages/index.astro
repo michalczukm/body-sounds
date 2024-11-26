@@ -10,50 +10,64 @@ import Layout from '../layouts/Layout.astro';
 
     <div class='grid grid-cols-2 md:grid-cols-3 gap-6 max-w-3xl mx-auto'>
       <button
-        data-sound='cat'
-        class='sound-button bg-yellow-400 hover:bg-yellow-500'
+        data-sound='heartbeat-regular'
+        class='sound-button bg-red-400 hover:bg-red-500'
       >
-        <span class='text-6xl mb-2'>🐱</span>
-        <span class='text-xl font-bold'>Meow!</span>
+        <span class='text-6xl mb-2'>💓</span>
+        <span class='text-xl font-bold'>Bicie serca</span>
       </button>
 
       <button
-        data-sound='dog'
+        data-sound='heartbeat-speeding-up'
+        class='sound-button bg-red-500 hover:bg-red-600'
+      >
+        <span class='text-6xl mb-2'>💗</span>
+        <span class='text-xl font-bold'>Szybsze bicie serca</span>
+      </button>
+
+      <button
+        data-sound='lungs-bronchial'
         class='sound-button bg-blue-400 hover:bg-blue-500'
       >
-        <span class='text-6xl mb-2'>🐶</span>
-        <span class='text-xl font-bold'>Woof!</span>
+        <span class='text-6xl mb-2'>🫁</span>
+        <span class='text-xl font-bold'>Szmer oskrzelowy</span>
       </button>
 
       <button
-        data-sound='bird'
+        data-sound='lungs-wheezing'
+        class='sound-button bg-yellow-400 hover:bg-yellow-500'
+      >
+        <span class='text-6xl mb-2'>🤥</span>
+        <span class='text-xl font-bold'>Furczenie</span>
+      </button>
+
+      <button
+        data-sound='bowel-sounds'
         class='sound-button bg-green-400 hover:bg-green-500'
       >
-        <span class='text-6xl mb-2'>🐦</span>
-        <span class='text-xl font-bold'>Tweet!</span>
+        <span class='text-6xl mb-2'>🫄</span>
+        <span class='text-xl font-bold'>Perystaltyka jelit</span>
       </button>
 
       <button
-        data-sound='duck'
+        data-sound='fart'
         class='sound-button bg-red-400 hover:bg-red-500'
       >
         <span class='text-6xl mb-2'>🦆</span>
-        <span class='text-xl font-bold'>Quack!</span>
+        <span class='text-xl font-bold'>Purt!</span>
       </button>
     </div>
-
-    <!-- Play/Stop Controls -->
-    <div class='flex justify-center gap-4 mt-8'>
+    <!-- <div class='flex justify-center gap-4 mt-8'>
       <button id='stop' class='control-button bg-red-500 hover:bg-red-600'>
         Stop 🛑
       </button>
-    </div>
+    </div> -->
   </main>
 </Layout>
 
 <style>
   .sound-button {
-    @apply rounded-2xl p-6 text-white shadow-lg transform transition-transform duration-200 hover:scale-105;
+    @apply rounded-2xl p-6 text-white shadow-lg transform transition-transform duration-200 hover:scale-105 flex flex-col items-center;
   }
 
   .control-button {
@@ -66,12 +80,21 @@ import Layout from '../layouts/Layout.astro';
 </style>
 
 <script>
+  const makeAudioElement = (src: string, volume: number = 1): HTMLAudioElement => {
+    const audio = new Audio(src);
+    audio.preload = 'none';
+    audio.volume = volume;
+    return audio;
+  };
+
   // Audio elements will be initialized here
   const SOUNDS = Object.freeze({
-    cat: new Audio('/sounds/cat.mp3'),
-    dog: new Audio('/sounds/dog.mp3'),
-    bird: new Audio('/sounds/bird.mp3'),
-    duck: new Audio('/sounds/duck.mp3'),
+    fart: makeAudioElement('/sounds/fart.mp3', 0.7),
+    'bowel-sounds': makeAudioElement('/sounds/bowel-sounds.m4a', 0.5),
+    'heartbeat-regular': makeAudioElement('/sounds/heartbeat-regular.mp3'),
+    'heartbeat-speeding-up': makeAudioElement('/sounds/heartbeat-speeding-up.mp3'),
+    'lungs-bronchial': makeAudioElement('/sounds/lungs-bronchial.m4a'),
+    'lungs-wheezing': makeAudioElement('/sounds/lungs-wheezing.m4a'),
   });
 
   const soundControls = (() => {
@@ -87,7 +110,7 @@ import Layout from '../layouts/Layout.astro';
         stopCurrentSound();
         return;
       }
-	  
+
       stopCurrentSound();
 
       const sound = SOUNDS[soundKey];
