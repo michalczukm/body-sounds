@@ -57,11 +57,6 @@ import Layout from '../layouts/Layout.astro';
         <span class='text-xl font-bold'>Purt!</span>
       </button>
     </div>
-    <!-- <div class='flex justify-center gap-4 mt-8'>
-      <button id='stop' class='control-button bg-red-500 hover:bg-red-600'>
-        Stop 🛑
-      </button>
-    </div> -->
   </main>
 </Layout>
 
@@ -80,7 +75,10 @@ import Layout from '../layouts/Layout.astro';
 </style>
 
 <script>
-  const makeAudioElement = (src: string, volume: number = 1): HTMLAudioElement => {
+  const makeAudioElement = (
+    src: string,
+    volume: number = 1
+  ): HTMLAudioElement => {
     const audio = new Audio(src);
     audio.preload = 'none';
     audio.volume = volume;
@@ -105,12 +103,6 @@ import Layout from '../layouts/Layout.astro';
       soundKey: keyof typeof SOUNDS,
       button: HTMLButtonElement
     ) => {
-      const isCurrentlySoundPressed = soundKey === currentlyPlaying;
-      if (isCurrentlySoundPressed) {
-        stopCurrentSound();
-        return;
-      }
-
       stopCurrentSound();
 
       const sound = SOUNDS[soundKey];
@@ -133,24 +125,28 @@ import Layout from '../layouts/Layout.astro';
       currentButton = null;
     };
 
+    const isCurrentlyPlaying = (sound: keyof typeof SOUNDS) =>
+      currentlyPlaying === sound;
+
     return {
       playSound,
       stopCurrentSound,
+      isCurrentlyPlaying,
     };
   })();
 
-  const { playSound, stopCurrentSound } = soundControls;
+  const { playSound, stopCurrentSound, isCurrentlyPlaying } = soundControls;
 
-  const stopButton = document.getElementById('stop');
   const soundButtons =
     document.querySelectorAll<HTMLButtonElement>('.sound-button');
 
   soundButtons.forEach((button) => {
     button.addEventListener('click', () => {
       const soundKey = button.dataset.sound as keyof typeof SOUNDS;
-      playSound(soundKey, button);
+
+      isCurrentlyPlaying(soundKey)
+        ? stopCurrentSound()
+        : playSound(soundKey, button);
     });
   });
-
-  stopButton?.addEventListener('click', stopCurrentSound);
 </script>
